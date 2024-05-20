@@ -1,7 +1,7 @@
 import argparse
 import json
 
-print(__name__)
+
 def main():
     parser = argparse.ArgumentParser(
         description='Compares two configuration files and shows a difference.'
