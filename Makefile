@@ -1,5 +1,5 @@
 install:
-	python3 -m pip install --user dist/*.whl
+	poetry install
 
 test:
 	poetry run pytest
