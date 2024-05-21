@@ -1,16 +1,30 @@
 from gendiff.scripts.gendiff import generate_diff
-import json
-from pathlib import Path
+from gendiff.scripts.gendiff import parser_file
 
 
-def test_generate_diff():
-    script_dir = Path(__file__).parent
-    file_path1 = script_dir / 'fixtures' / 'file1.json'
-    file_path2 = script_dir / 'fixtures' / 'file2.json'
-    correct_result_path = script_dir / 'fixtures' / 'right_test_gendiff.txt'
-    file1 = json.load(open(file_path1))
-    file2 = json.load(open(file_path2))
-    f = open(correct_result_path)
-    text = f.read()
-    f.close
-    assert generate_diff(file1, file2) == text
+def test_generate_diff1():
+    file1 = parser_file('file1.json')
+    file2 = parser_file('file2.json')
+    correct_result = """{
+  - follow: false
+    host: hexlet.io
+  - proxy: 123.234.53.22
+  - timeout: 50
+  + timeout: 20
+  + verbose: true
+}"""
+    assert generate_diff(file1, file2) == correct_result
+
+
+def test_generate_diff2():
+    file1 = parser_file('file1.yml')
+    file2 = parser_file('file2.yml')
+    correct_result = """{
+  - follow: false
+    host: hexlet.io
+  - proxy: 123.234.53.22
+  - timeout: 50
+  + timeout: 20
+  + verbose: true
+}"""
+    assert generate_diff(file1, file2) == correct_result

@@ -1,6 +1,7 @@
 import argparse
 import json
 from pathlib import Path
+import yaml
 
 
 def main():
@@ -11,19 +12,26 @@ def main():
     parser.add_argument('second_file')
     parser.add_argument('-f', '--format', help='set format of output')
     args = parser.parse_args()
-    script_dir = Path(__file__).parent
-    script_dir = script_dir.parent
-    file_path1 = script_dir / 'tests' / 'fixtures' / args.first_file
-    file_path2 = script_dir / 'tests' / 'fixtures' / args.second_file
-    file1 = json.load(open(file_path1))
-    file2 = json.load(open(file_path2))
+    file1 = parser_file(args.first_file)
+    file2 = parser_file(args.second_file)
     print(generate_diff(file1, file2))
+
+
+def parser_file(file_name):
+    script_dir = Path(__file__).parent.parent
+    file_path = script_dir / 'tests' / 'fixtures' / file_name
+    if file_name.endswith('json'):
+        with open(file_path) as f:
+            return json.load(f)
+    elif file_name.endswith('yml') or file_name.endswith('yaml'):
+        with open(file_path) as f:
+            return yaml.safe_load(f)
 
 
 def generate_diff(file1, file2):
     set1 = set(file1.keys())
     set2 = set(file2.keys())
-    result = 'gendiff filepath1.json filepath2.json\n{'
+    result = '{'
     for i in sorted(set1 | set2):
         if file1.get(i) == file2.get(i):
             result = result + '\n    ' + i + ': ' + str(file1[i]).lower()
@@ -39,3 +47,7 @@ def generate_diff(file1, file2):
             result = result + '\n  + ' + i + ': ' + str(file2[i]).lower()
     result = result + '\n}'
     return result
+
+
+if __name__ == '__main__':
+    main()
