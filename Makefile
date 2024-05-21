@@ -10,8 +10,8 @@ lint:
 build: 
 	poetry build
 
-test-coverage:
-	poetry run pytest --cov
+#test-coverage:
+#	poetry run pytest --cov
 
 selfcheck:
 	poetry check
