@@ -28,3 +28,10 @@ def test_generate_diff2():
   + verbose: true
 }"""
     assert generate_diff(file1, file2) == correct_result
+
+
+def test_generate_diff3():
+    file1 = parser_file('file4.json')
+    file2 = parser_file('file5.json')
+    correct_result = parser_file('right_test_gendiff.txt')
+    assert generate_diff(file1, file2) == correct_result

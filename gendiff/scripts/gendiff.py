@@ -26,27 +26,47 @@ def parser_file(file_name):
     elif file_name.endswith('yml') or file_name.endswith('yaml'):
         with open(file_path) as f:
             return yaml.safe_load(f)
+    elif file_name.endswith('txt'):
+        with open(file_path) as f:
+            return f.read()
 
 
-def generate_diff(file1, file2):
+def generate_diff(file1, file2, deep=1):
     set1 = set(file1.keys())
     set2 = set(file2.keys())
-    result = '{'
-    for i in sorted(set1 | set2):
-        if file1.get(i) == file2.get(i):
-            result = result + '\n    ' + i + ': ' + str(file1[i]).lower()
-        if (
-            i in set1 - set2 or
-            (i in set1 and i in set2 and file1.get(i) != file2.get(i))
+    result = []
+    space = ' ' * (deep - 1)
+    for key in sorted(set1 | set2):
+        if key in set1 and key in set2 and (
+            isinstance(file1[key], dict) and isinstance(file2[key], dict)
         ):
-            result = result + '\n  - ' + i + ': ' + str(file1[i]).lower()
-        if (
-            i in set2 - set1 or
-            (i in set1 and i in set2 and file1.get(i) != file2.get(i))
-        ):
-            result = result + '\n  + ' + i + ': ' + str(file2[i]).lower()
-    result = result + '\n}'
-    return result
+            result.append(f'{space}    {key}: {{\n{generate_diff(file1[key], file2[key], deep + 4)}\n{space}    }}')
+        else:
+            if key in set1 and key in set2 and file1.get(key) == file2.get(key):
+                result.append(f'{space}    {key}: {string(file1[key], deep + 4)}')
+            else:
+                if key in set1:
+                    result.append(f'{space}  - {key}: {string(file1[key], deep + 4)}')
+                if key in set2:
+                    result.append(f'{space}  + {key}: {string(file2[key], deep + 4)}')
+    if deep == 1:
+        return '{\n' + '\n'.join(result) + '\n}'
+    return '\n'.join(result)
+
+
+def string(value, deep=1):
+    if value is None:
+        return 'null'
+    if isinstance(value, bool):
+        return str(value).lower()
+    if not isinstance(value, dict):
+        return str(value)
+    space = ' ' * (deep - 1)
+    result = ['{']
+    for key in value.keys():
+        result.append(f'{space}    {key}: {string(value[key], deep + 4)}')
+    result.append(space + '}')
+    return '\n'.join(result)
 
 
 if __name__ == '__main__':
