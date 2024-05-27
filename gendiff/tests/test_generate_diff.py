@@ -67,3 +67,10 @@ Property 'group2' was removed
 Property 'group3' was added with value: [complex value]'''
     print(generate_diff(file1, file2, 'plain'))
     assert generate_diff(file1, file2, 'plain') == correct_result
+
+
+def test_generate_diff7():
+    file1 = parser_file('file4.yml')
+    file2 = parser_file('file5.json')
+    correct_result = parser_file('right_test_json.txt')
+    assert generate_diff(file1, file2, 'json') == correct_result
