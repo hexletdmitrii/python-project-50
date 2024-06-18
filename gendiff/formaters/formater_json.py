@@ -1,7 +1,10 @@
 import json
+from gendiff.scripts.parser_file import parser_file
 
 
 def formater_json(file1, file2):
+    file1 = parser_file(file1)
+    file2 = parser_file(file2)
     def build_diff(file1, file2):
         result = []
         keys = sorted(set(file1.keys()) | set(file2.keys()))

@@ -3,8 +3,8 @@ from gendiff.scripts.gendiff import parser_file
 
 
 def test_generate_diff1():
-    file1 = parser_file('file1.json')
-    file2 = parser_file('file2.json')
+    file1 = 'file1.json'
+    file2 = 'file2.json'
     correct_result = """{
   - follow: false
     host: hexlet.io
@@ -17,8 +17,8 @@ def test_generate_diff1():
 
 
 def test_generate_diff2():
-    file1 = parser_file('file1.yml')
-    file2 = parser_file('file2.yml')
+    file1 = 'file1.yml'
+    file2 = 'file2.yml'
     correct_result = """{
   - follow: false
     host: hexlet.io
@@ -31,22 +31,20 @@ def test_generate_diff2():
 
 
 def test_generate_diff3():
-    file1 = parser_file('file4.json')
-    file2 = parser_file('file5.json')
-    correct_result = parser_file('right_test_gendiff.txt')
+    file1 = 'file4.json'
+    file2 = 'file5.json'
+    correct_result = parser_file('/home/dmitrii/hexlet/python-project-50/gendiff/tests/fixtures/right_test_gendiff.txt')
     assert generate_diff(file1, file2) == correct_result
 
 
 def test_generate_diff4():
-    file1 = parser_file('file4.yml')
-    file2 = parser_file('file5.yaml')
-    correct_result = parser_file('right_test_gendiff.txt')
+    file1 = 'file4.yml'
+    file2 = 'file5.yaml'
+    correct_result = parser_file('/home/dmitrii/hexlet/python-project-50/gendiff/tests/fixtures/right_test_gendiff.txt')
     assert generate_diff(file1, file2) == correct_result
 
 
 def test_generate_diff5():
-    file1 = parser_file('file4.yml')
-    file2 = parser_file('file5.json')
     correct_result = '''Property 'common.follow' was added with value: false
 Property 'common.setting2' was removed
 Property 'common.setting3' was updated. From true to null
@@ -58,12 +56,11 @@ Property 'group1.baz' was updated. From 'bas' to 'bars'
 Property 'group1.nest' was updated. From [complex value] to 'str'
 Property 'group2' was removed
 Property 'group3' was added with value: [complex value]'''
-    print(generate_diff(file1, file2, 'plain'))
-    assert generate_diff(file1, file2, 'plain') == correct_result
+    assert generate_diff('file4.yml', 'file5.json', 'plain') == correct_result
 
 
 def test_generate_diff6():
-    file1 = parser_file('file4.yml')
-    file2 = parser_file('file5.json')
+    file1 = 'file4.yml'
+    file2 = 'file5.json'
     correct_result = parser_file('right_test_json.txt')
     assert generate_diff(file1, file2, 'json') == correct_result
