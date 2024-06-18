@@ -1,5 +1,5 @@
 from gendiff.scripts.gendiff import generate_diff
-from gendiff.scripts.gendiff import parser_file
+from gendiff.scripts.parser_file import parser_file
 
 
 def test_generate_diff1():

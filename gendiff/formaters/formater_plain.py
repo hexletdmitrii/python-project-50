@@ -4,6 +4,7 @@ from gendiff.scripts.parser_file import parser_file
 def formater_plain(file1_, file2_):
     file1_ = parser_file(file1_)
     file2_ = parser_file(file2_)
+
     def build_diff(file1, file2, parent=''):
         result = []
         keys = sorted(set(file1.keys()) | set(file2.keys()))
