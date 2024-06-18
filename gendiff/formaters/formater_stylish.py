@@ -1,3 +1,5 @@
+
+
 def formater_stylish(file1, file2, deep=1):
     def string(value, deep=1):
         if value is None:

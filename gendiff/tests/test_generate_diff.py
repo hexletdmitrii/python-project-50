@@ -47,13 +47,6 @@ def test_generate_diff4():
 def test_generate_diff5():
     file1 = parser_file('file4.yml')
     file2 = parser_file('file5.json')
-    correct_result = parser_file('right_test_gendiff.txt')
-    assert generate_diff(file1, file2) == correct_result
-
-
-def test_generate_diff6():
-    file1 = parser_file('file4.yml')
-    file2 = parser_file('file5.json')
     correct_result = '''Property 'common.follow' was added with value: false
 Property 'common.setting2' was removed
 Property 'common.setting3' was updated. From true to null
@@ -69,7 +62,7 @@ Property 'group3' was added with value: [complex value]'''
     assert generate_diff(file1, file2, 'plain') == correct_result
 
 
-def test_generate_diff7():
+def test_generate_diff6():
     file1 = parser_file('file4.yml')
     file2 = parser_file('file5.json')
     correct_result = parser_file('right_test_json.txt')

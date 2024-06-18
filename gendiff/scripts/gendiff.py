@@ -2,7 +2,9 @@ import argparse
 from gendiff.formaters.formater_stylish import formater_stylish
 from gendiff.formaters.formater_plain import formater_plain
 from gendiff.formaters.formater_json import formater_json
-from gendiff.scripts.parser_file import parser_file
+from pathlib import Path
+import yaml
+import json
 
 
 def main():
@@ -28,6 +30,20 @@ def generate_diff(file1, file2, format='stylish'):
         return formater_json(file1, file2)
     else:
         raise ValueError('Unknown format!!!')
+
+
+def parser_file(file_name):
+    script_dir = Path(__file__).parent.parent
+    file_path = script_dir / 'tests' / 'fixtures' / file_name
+    if file_name.endswith('json'):
+        with open(file_path) as f:
+            return json.load(f)
+    elif file_name.endswith('yml') or file_name.endswith('yaml'):
+        with open(file_path) as f:
+            return yaml.safe_load(f)
+    elif file_name.endswith('txt'):
+        with open(file_path) as f:
+            return f.read()
 
 
 if __name__ == '__main__':
