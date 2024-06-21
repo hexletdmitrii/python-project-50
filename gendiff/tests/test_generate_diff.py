@@ -33,14 +33,14 @@ def test_generate_diff2():
 def test_generate_diff3():
     file1 = 'file4.json'
     file2 = 'file5.json'
-    correct_result = parser_file('/home/dmitrii/hexlet/python-project-50/gendiff/tests/fixtures/right_test_gendiff.txt')
+    correct_result = parser_file('right_test_gendiff.txt')
     assert generate_diff(file1, file2) == correct_result
 
 
 def test_generate_diff4():
     file1 = 'file4.yml'
     file2 = 'file5.yaml'
-    correct_result = parser_file('/home/dmitrii/hexlet/python-project-50/gendiff/tests/fixtures/right_test_gendiff.txt')
+    correct_result = parser_file('right_test_gendiff.txt')
     assert generate_diff(file1, file2) == correct_result
 
 
