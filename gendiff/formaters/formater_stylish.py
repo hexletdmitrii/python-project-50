@@ -1,42 +1,37 @@
-from gendiff.scripts.parser_file import parser_file
+from gendiff.formaters.formater_string import formater_string
 
 
-def formater_stylish(file1_, file2_):
-    file1_ = parser_file(file1_)
-    file2_ = parser_file(file2_)
-
-    def build_diff(file1, file2, deep=1):
-        def string(value, deep=1):
-            if value is None:
-                return 'null'
-            if isinstance(value, bool):
-                return str(value).lower()
-            if not isinstance(value, dict):
-                return str(value)
-            space = ' ' * (deep - 1)
-            result = ['{']
-            for key in value.keys():
-                result.append(f'{space}    {key}: {string(value[key], deep + 4)}')
-            result.append(space + '}')
-            return '\n'.join(result)
-        set1 = set(file1.keys())
-        set2 = set(file2.keys())
+def formater_stylish(diff):
+    def build_stylish(diff, deep=1):
         result = []
         space = ' ' * (deep - 1)
-        for key in sorted(set1 | set2):
-            if key in set1 and key in set2 and (
-                isinstance(file1[key], dict) and isinstance(file2[key], dict)
-            ):
-                result.append(f'{space}    {key}: {{\n{build_diff(file1[key], file2[key], deep + 4)}\n{space}    }}')
-            else:
-                if key in set1 and key in set2 and file1.get(key) == file2.get(key):
-                    result.append(f'{space}    {key}: {string(file1[key], deep + 4)}')
-                else:
-                    if key in set1:
-                        result.append(f'{space}  - {key}: {string(file1[key], deep + 4)}')
-                    if key in set2:
-                        result.append(f'{space}  + {key}: {string(file2[key], deep + 4)}')
+        for node in diff:
+            action_type, key = node.get('action_type'), node.get('key')
+            value, new_value = node.get("value"), node.get('new_value')
+
+            if action_type == 'children':
+                result.append(f'{space}    {str(key)}: {{\n{build_stylish(value, deep + 4)}\n{space}    }}')
+            elif action_type == 'added':
+                result.append(f'{space}  + {str(key)}: {string(value, deep + 4)}')
+            elif action_type == 'removed':
+                result.append(f'{space}  - {str(key)}: {string(value, deep + 4)}')
+            elif action_type == 'changed':
+                result.append(f'{space}  - {str(key)}: {string(value, deep + 4)}')
+                result.append(f'{space}  + {str(key)}: {string(new_value, deep + 4)}')
+            elif action_type == 'not_changed':
+                result.append(f'{space}    {str(key)}: {string(value, deep + 4)}')
         if deep == 1:
             return '{\n' + '\n'.join(result) + '\n}'
         return '\n'.join(result)
-    return build_diff(file1_, file2_)
+    return build_stylish(diff)
+
+
+def string(value, deep=1):
+    if not isinstance(value, dict):
+        return formater_string(value)
+    space = ' ' * (deep - 1)
+    result = ['{']
+    for key in value.keys():
+        result.append(f'{space}    {key}: {string(value[key], deep + 4)}')
+    result.append(space + '}')
+    return '\n'.join(result)

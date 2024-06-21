@@ -1,27 +1,29 @@
-from gendiff.scripts.parser_file import parser_file
+from gendiff.formaters.formater_string import formater_string
 
 
-def formater_plain(file1_, file2_):
-    file1_ = parser_file(file1_)
-    file2_ = parser_file(file2_)
+def upgrade_str(value):
+    if isinstance(value, dict):
+        return '[complex value]'
+    new_value = repr(value) if isinstance(value, str) else value
+    return formater_string(new_value)
 
-    def build_diff(file1, file2, parent=''):
+
+def formater_plain(diff):
+    def build_diff(diff, parent=''):
         result = []
-        keys = sorted(set(file1.keys()) | set(file2.keys()))
-        for key in keys:
+        for node in diff:
+            action_type, key = node.get('action_type'), node.get('key')
+            value, new_value = node.get("value"), node.get('new_value')
             full_key = f"{parent}.{key}" if parent else key
-            if key not in file1:
-                value = '[complex value]' if isinstance(file2[key], dict) else repr(file2[key]).lower()
-                result.append(f"Property '{full_key}' was added with value: {value}")
-            elif key not in file2:
+            if action_type == 'children':
+                result.extend(build_diff(value, full_key))
+            elif action_type == 'added':
+                result.append(f"Property '{full_key}' was added with value: {upgrade_str(value)}")
+            elif action_type == 'removed':
                 result.append(f"Property '{full_key}' was removed")
-            elif isinstance(file1[key], dict) and isinstance(file2[key], dict):
-                result.extend(build_diff(file1[key], file2[key], full_key))
-            elif file1[key] != file2[key]:
-                old_value = '[complex value]' if isinstance(file1[key], dict) else repr(file1[key]).lower()
-                new_value = '[complex value]' if isinstance(file2[key], dict) else repr(file2[key]).lower()
-                if new_value == 'none':
-                    new_value = 'null'
-                result.append(f"Property '{full_key}' was updated. From {old_value} to {new_value}")
+            elif action_type == 'changed':
+                result.append(
+                    f"Property '{full_key}' was updated. From {upgrade_str(value)} to {upgrade_str(new_value)}"
+                )
         return result
-    return build_diff(file1_, file2_)
+    return build_diff(diff)
