@@ -22,6 +22,7 @@ jobs:
         run: |
           pip install poetry
           make install
+          pip install pytest
       - name: Show installed packages (debug step)
         run: |
           pip list
