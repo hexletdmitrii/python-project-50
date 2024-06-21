@@ -21,6 +21,8 @@ def main():
 def generate_diff(file1, file2, format='stylish'):
     data1 = parser_file(file1)
     data2 = parser_file(file2)
+    if data1 == 'Error' or data2 == 'Error':
+        return print('Файла не существует')
     diff = build_diff(data1, data2)
     if format == 'stylish':
         return formater_stylish(diff)
