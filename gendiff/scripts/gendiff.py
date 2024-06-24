@@ -2,8 +2,8 @@
 from gendiff.formaters.formater_stylish import formater_stylish
 from gendiff.formaters.formater_plain import formater_plain
 from gendiff.formaters.formater_json import formater_json
-from gendiff.scripts.parser_file import parser_file
-from gendiff.scripts.build_diff import build_diff
+from gendiff.parser_file import parser_file
+from gendiff.build_diff import build_diff
 from gendiff.cli import parse_args
 
 

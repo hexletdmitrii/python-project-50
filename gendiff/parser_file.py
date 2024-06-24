@@ -8,7 +8,7 @@ def parser_file(file_name):
         file_path = file_name
     else:
         script_dir = Path(__file__).parent.parent
-        file_path = script_dir / 'tests' / 'fixtures' / file_name
+        file_path = script_dir / 'gendiff' / 'tests' / 'fixtures' / file_name
     file_check = Path(file_path)
     if not file_check.exists():
         return 'Error'
@@ -17,8 +17,8 @@ def parser_file(file_name):
             try:
                 return json.load(f)
             except json.JSONDecodeError:
-                return ''
-            return json.load(f)
+                return 'Error'
+            # return json.load(f)
     elif file_name.endswith('yml') or file_name.endswith('yaml'):
         with open(file_path) as f:
             return yaml.safe_load(f)
